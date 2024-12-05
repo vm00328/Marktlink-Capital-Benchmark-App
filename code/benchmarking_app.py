@@ -6,7 +6,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import plotly.graph_objects as go
 
-AUTHORIZED_EMAILS = os.getenv("AUTHORIZED_EMAILS").split(",")
+AUTHORIZED_EMAILS = st.secrets["AUTHORIZED_EMAILS"]
 
 def authenticate():
     st.sidebar.title("Login")
