@@ -1,14 +1,20 @@
 import os
+import requests
+from io import BytesIO
 import pandas as pd
 import streamlit as st
+from dotenv import load_dotenv
 import plotly.graph_objects as go
 
 st.set_page_config(layout = "wide")
 
+load_dotenv() # Load environment variables
+excel_file_url = os.getenv('EXCEL_FILE_URL')
+
 @st.cache_data
-def load_fund_data():
-    file_path = os.path.join(os.path.dirname(__file__), "../data/Preqin_funds_export-12-03-2024-1738.xlsx")
-    fund_data = pd.read_excel(file_path)
+def load_fund_data(url):
+    response = requests.get(url)
+    fund_data = pd.read_excel(BytesIO(response.content), engine = "openpyxl")
     return fund_data
 
 logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
@@ -38,11 +44,12 @@ with st.sidebar.expander("📊 Performance Metrics", expanded = True):
     net_dpi = st.number_input("Net DPI (X)", min_value = 0.0, step = 0.01)
 
 if st.sidebar.button("Submit"):
+
+    fund_data = load_fund_data(excel_file_url)
+
     if not fund_name:
         st.error("Please provide a fund name.")
         st.stop()
-
-    fund_data = load_fund_data() # data loading
 
     # Asset Class Selection
     asset_class_mapping = {
@@ -190,6 +197,6 @@ if st.sidebar.button("Submit"):
             columns[i].plotly_chart(fig, use_container_width = True) # Assigning each chart to a column
 
         # Footer Section with dynamic data insights
-        footer_text = f"""**Data Source:** Preqin | **Vintage Year:** {vintage} | **Sector:** Sector-Agnostic | **Geography:** {', '.join(selected_regions)} | **Fund Size:** {fund_size} | **Number of Funds:** {num_funds}"""
+        footer_text = f"""**Asset Class:** {asset_class} | **Vintage Year:** {vintage} | **Sector:** Sector-Agnostic | **Geography:** {', '.join(selected_regions)} | **Number of Funds:** {num_funds}"""
         st.markdown("---")
         st.markdown(footer_text)
