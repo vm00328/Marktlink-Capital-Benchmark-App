@@ -31,7 +31,6 @@ if not st.session_state['authenticated']:
 
 st.set_page_config(layout = "wide")
 
-load_dotenv() # Load environment variables
 excel_file_url = st.secrets["EXCEL_FILE_URL"]
 
 @st.cache_data
