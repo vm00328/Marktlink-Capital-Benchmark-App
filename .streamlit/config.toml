@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#003165"             # Dark Blue for buttons and accents
+backgroundColor = "#FFFFFF"          # White background for the main content
+secondaryBackgroundColor = "#F2F2F2" # Light Gray background for the sidebar
+textColor = "#003165"                # Dark Blue text color
+font = "sans serif"                  # Default font
