@@ -8,7 +8,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import plotly.graph_objects as go
 
-# authentication state
+# Initialize authentication state
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
@@ -25,6 +25,12 @@ def authenticate():
             st.sidebar.error("Unauthorized email")
             st.session_state['authenticated'] = False
 
+# Authentication block
+if not st.session_state['authenticated']:
+    authenticate()
+    if not st.session_state['authenticated']:
+        st.stop()  # Stop the app if not authenticated
+
 excel_file_url = st.secrets["EXCEL_FILE_URL"]
 
 @st.cache_data
@@ -33,20 +39,13 @@ def load_fund_data(url):
     fund_data = pd.read_excel(BytesIO(response.content), engine = "openpyxl")
     return fund_data
 
-# Sidebar Content
-with st.sidebar:
-    if not st.session_state['authenticated']:
-        authenticate()
-        st.stop()  # Stop the app if not authenticated
-    else:
-        # Display content for authenticated users
-        logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
-        st.image(logo_path, use_container_width=True)
-        st.title("Fund Details")
-        st.info("Compare against industry benchmarks.")
+logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
+st.sidebar.image(logo_path, use_container_width = True)
 
 # UI components
 st.title("Fund Performance Benchmarking")
+st.sidebar.title("Fund Details")
+st.sidebar.info("Compare against industry benchmarks.")
 
 # Input fields for fund details
 with st.sidebar.expander("🎯 Fund Details", expanded = True):
