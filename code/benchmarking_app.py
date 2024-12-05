@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 st.set_page_config(layout = "wide")
 
 load_dotenv() # Load environment variables
-excel_file_url = os.getenv('EXCEL_FILE_URL')
+excel_file_url = st.secrets["EXCEL_FILE_URL"]
 
 @st.cache_data
 def load_fund_data(url):
