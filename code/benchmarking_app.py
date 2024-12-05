@@ -14,17 +14,20 @@ def authenticate():
     if st.sidebar.button("Submit"):
         if email in AUTHORIZED_EMAILS:
             st.session_state['authenticated'] = True
-            st.success("Authentication successful")
+            st.sidebar.success("Authentication successful")
         else:
-            st.error("Unauthorized email")
+            st.sidebar.error("Unauthorized email")
             st.session_state['authenticated'] = False
 
+# Initialize authentication state
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
+# Authentication block
 if not st.session_state['authenticated']:
     authenticate()
-    st.stop()
+    if not st.session_state['authenticated']:
+        st.stop()  # Stop the app if not authenticated
 
 st.set_page_config(layout = "wide")
 
