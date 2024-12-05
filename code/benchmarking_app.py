@@ -6,6 +6,26 @@ import streamlit as st
 from dotenv import load_dotenv
 import plotly.graph_objects as go
 
+AUTHORIZED_EMAILS = os.getenv("AUTHORIZED_EMAILS").split(",")
+
+def authenticate():
+    st.sidebar.title("Login")
+    email = st.sidebar.text_input("Enter your email")
+    if st.sidebar.button("Submit"):
+        if email in AUTHORIZED_EMAILS:
+            st.session_state['authenticated'] = True
+            st.success("Authentication successful")
+        else:
+            st.error("Unauthorized email")
+            st.session_state['authenticated'] = False
+
+if 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
+
+if not st.session_state['authenticated']:
+    authenticate()
+    st.stop()
+
 st.set_page_config(layout = "wide")
 
 load_dotenv() # Load environment variables
