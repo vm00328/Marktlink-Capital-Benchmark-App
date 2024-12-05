@@ -6,6 +6,8 @@ import streamlit as st
 from dotenv import load_dotenv
 import plotly.graph_objects as go
 
+st.set_page_config(layout = "wide") # should be first command
+
 AUTHORIZED_EMAILS = st.secrets["AUTHORIZED_EMAILS"]
 
 def authenticate():
@@ -29,8 +31,6 @@ if not st.session_state['authenticated']:
     if not st.session_state['authenticated']:
         st.stop()  # Stop the app if not authenticated
 
-st.set_page_config(layout = "wide")
-
 excel_file_url = st.secrets["EXCEL_FILE_URL"]
 
 @st.cache_data
@@ -51,7 +51,7 @@ st.sidebar.info("Compare against industry benchmarks.")
 with st.sidebar.expander("🎯 Fund Details", expanded = True):
     fund_name = st.text_input("Fund Name")
     asset_class = st.selectbox("Asset Class", options = ["Venture Capital (all stages)", "Private Equity (Buy-out)"])
-    vintage = st.selectbox("Vintage", options = [2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024])
+    vintage = st.selectbox("Vintage", options = list(range(2000,2025)))
     geography = st.selectbox("Fund Manager Location", options = ["Europe", "US", "Europe & US"])
     
     if asset_class == "Venture Capital (all stages)":
