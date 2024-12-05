@@ -17,7 +17,7 @@ AUTHORIZED_EMAILS = st.secrets["AUTHORIZED_EMAILS"]
 def authenticate():
     st.sidebar.title("Login")
     email = st.sidebar.text_input("Enter your email")
-    if st.sidebar.button("Submit"):
+    if st.sidebar.button("Login"):
         if email in AUTHORIZED_EMAILS:
             st.session_state['authenticated'] = True
             st.sidebar.success("Authentication successful")
