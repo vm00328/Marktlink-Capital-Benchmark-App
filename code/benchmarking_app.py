@@ -2,28 +2,49 @@ import streamlit as st
 st.set_page_config(layout = "wide") # should be first command
 
 import os
+import re
 import requests
 from io import BytesIO
 import pandas as pd
-from dotenv import load_dotenv
 import plotly.graph_objects as go
 
-# Initialize authentication state
+# Authentication state initialization
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
 
 AUTHORIZED_EMAILS = st.secrets["AUTHORIZED_EMAILS"]
 
 def authenticate():
-    st.sidebar.title("Login")
-    email = st.sidebar.text_input("Enter your email")
-    if st.sidebar.button("Login"):
-        if email in AUTHORIZED_EMAILS:
-            st.session_state['authenticated'] = True
-            st.sidebar.success("Authentication successful")
-        else:
-            st.sidebar.error("Unauthorized email")
-            st.session_state['authenticated'] = False
+    # Path to the logo
+    logo_path = os.path.join(os.path.dirname(__file__), "static/ML_logo.png")
+    
+    # Create three columns: empty, form, empty
+    col1, col2, col3 = st.columns([2, 3, 2])  # Adjust the ratios as needed
+    
+    with col2:
+        # Create a container for the login form with padding
+        with st.container():
+                    
+            # Create a form for authentication
+            with st.form(key='login_form'):
+                # Center the logo
+                st.image(logo_path, width = 300)  
+                # Email input
+                email = st.text_input("Email", placeholder="Enter your authorized email")
+                
+                # Submit button
+                submit_button = st.form_submit_button(label='Login')
+                
+                email_pattern = r"[^@]+@[^@]+\.[^@]+"
+                if submit_button:
+                    if not re.match(email_pattern, email):
+                        st.error("Please enter a valid email address.")
+                    if email in AUTHORIZED_EMAILS:
+                        st.session_state['authenticated'] = True
+                        st.success("Authentication successful")
+                        st.rerun()  # Rerun to hide the login form
+                    else:
+                        st.error("Unauthorized email")
 
 # Authentication block
 if not st.session_state['authenticated']:
